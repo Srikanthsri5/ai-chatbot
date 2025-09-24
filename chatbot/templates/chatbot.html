@@ -3,269 +3,311 @@
 
 {% block styles %}
 <style>
-    body, html {
-      height: 100%;
+  body,
+  html {
+    height: 100%;
+  }
+
+  .messages-box {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 120px;
+    /* Add padding to prevent overlap with form */
+  }
+
+  .messages-list {
+    padding-left: 0;
+  }
+
+  .message {
+    margin-bottom: 15px;
+    list-style: none;
+    display: flex;
+  }
+
+  .message-text {
+    padding: 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .sent {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+  }
+
+  .received {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    align-self: flex-start;
+    margin-right: auto;
+  }
+
+  .message-sender {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+  }
+
+  .message-content {
+    line-height: 1.5;
+  }
+
+  /* Enhanced formatting for bot responses */
+  .bot-response {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .bot-response h1,
+  .bot-response h2,
+  .bot-response h3 {
+    color: #2c3e50;
+    margin: 15px 0 10px 0;
+    font-weight: 600;
+  }
+
+  .bot-response h1 {
+    font-size: 1.3em;
+  }
+
+  .bot-response h2 {
+    font-size: 1.2em;
+  }
+
+  .bot-response h3 {
+    font-size: 1.1em;
+  }
+
+  .bot-response p {
+    margin: 10px 0;
+    text-align: justify;
+  }
+
+  .bot-response ul,
+  .bot-response ol {
+    margin: 10px 0;
+    padding-left: 25px;
+  }
+
+  .bot-response li {
+    margin: 8px 0;
+    line-height: 1.6;
+  }
+
+  .bot-response strong {
+    color: #2c3e50;
+    font-weight: 600;
+  }
+
+  .bot-response em {
+    color: #7f8c8d;
+    font-style: italic;
+  }
+
+  .bot-response code {
+    background-color: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+  }
+
+  .bot-response pre {
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 10px 0;
+    border-left: 4px solid #007bff;
+  }
+
+  .bot-response blockquote {
+    border-left: 4px solid #007bff;
+    padding-left: 15px;
+    margin: 15px 0;
+    font-style: italic;
+    color: #6c757d;
+  }
+
+  .bot-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .bot-icon {
+    font-size: 1.2em;
+    margin-right: 8px;
+  }
+
+  .message-form {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .message-input {
+    flex: 1;
+    border-radius: 25px;
+    border: 2px solid #dee2e6;
+    padding: 12px 20px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+
+  .message-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+
+  .btn-send {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: transform 0.2s ease;
+  }
+
+  .btn-send:hover {
+    transform: scale(1.1);
+  }
+
+  .chat-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-bottom: none;
+    padding: 15px 20px;
+  }
+
+  a {
+    color: #ffd700;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a:hover {
+    color: #ffed4e;
+    text-decoration: underline;
+  }
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: none;
+    align-items: center;
+    padding: 10px 15px;
+    margin: 10px 0;
+  }
+
+  .typing-dots {
+    display: flex;
+    align-items: center;
+  }
+
+  .typing-dots span {
+    height: 8px;
+    width: 8px;
+    background-color: #999;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 2px;
+    animation: typing 1.5s infinite ease-in-out;
+  }
+
+  .typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes typing {
+
+    0%,
+    60%,
+    100% {
+      transform: translateY(0);
     }
 
-    .messages-box {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: 120px; /* Add padding to prevent overlap with form */
+    30% {
+      transform: translateY(-10px);
     }
+  }
 
-    .messages-list {
-      padding-left: 0;
-    }
+  /* Scrollbar styling */
+  .messages-box::-webkit-scrollbar {
+    width: 6px;
+  }
 
-    .message {
-      margin-bottom: 15px;
-      list-style: none;
-      display: flex;
-    }
+  .messages-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
 
+  .messages-box::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
+
+  .messages-box::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
     .message-text {
-      padding: 15px;
-      border-radius: 15px;
-      max-width: 80%;
-      word-wrap: break-word;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .sent {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      align-self: flex-end;
-      margin-left: auto;
-    }
-
-    .received {
-      background-color: #f8f9fa;
-      border: 1px solid #e9ecef;
-      align-self: flex-start;
-      margin-right: auto;
-    }
-
-    .message-sender {
-      font-weight: bold;
-      margin-bottom: 5px;
-      font-size: 0.9em;
-    }
-
-    .message-content {
-      line-height: 1.5;
-    }
-
-    /* Enhanced formatting for bot responses */
-    .bot-response {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .bot-response h1, .bot-response h2, .bot-response h3 {
-      color: #2c3e50;
-      margin: 15px 0 10px 0;
-      font-weight: 600;
-    }
-
-    .bot-response h1 { font-size: 1.3em; }
-    .bot-response h2 { font-size: 1.2em; }
-    .bot-response h3 { font-size: 1.1em; }
-
-    .bot-response p {
-      margin: 10px 0;
-      text-align: justify;
-    }
-
-    .bot-response ul, .bot-response ol {
-      margin: 10px 0;
-      padding-left: 25px;
-    }
-
-    .bot-response li {
-      margin: 8px 0;
-      line-height: 1.6;
-    }
-
-    .bot-response strong {
-      color: #2c3e50;
-      font-weight: 600;
-    }
-
-    .bot-response em {
-      color: #7f8c8d;
-      font-style: italic;
-    }
-
-    .bot-response code {
-      background-color: #f4f4f4;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9em;
-      color: #d63384;
-    }
-
-    .bot-response pre {
-      background-color: #f4f4f4;
-      padding: 15px;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 10px 0;
-      border-left: 4px solid #007bff;
-    }
-
-    .bot-response blockquote {
-      border-left: 4px solid #007bff;
-      padding-left: 15px;
-      margin: 15px 0;
-      font-style: italic;
-      color: #6c757d;
-    }
-
-    .bot-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .bot-icon {
-      font-size: 1.2em;
-      margin-right: 8px;
+      max-width: 90%;
+      padding: 12px;
     }
 
     .message-form {
-      display: flex;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 15px;
-      background-color: #f8f9fa;
-      border-top: 2px solid #dee2e6;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      padding: 10px;
     }
 
-    .message-input {
-      flex: 1;
-      border-radius: 25px;
-      border: 2px solid #dee2e6;
-      padding: 12px 20px;
-      font-size: 16px;
-      transition: border-color 0.3s ease;
+    .messages-box {
+      padding-bottom: 100px;
     }
+  }
 
-    .message-input:focus {
-      outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
+  .delete-button{
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    right: 20px; 
+    margin: 25px 25px 0px 0px ; 
+    position: absolute;
+  }
 
-    .btn-send {
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      margin-left: 10px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
-      transition: transform 0.2s ease;
-    }
-
-    .btn-send:hover {
-      transform: scale(1.1);
-    }
-
-    .chat-container {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card {
-      border: none;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-      border-bottom: none;
-      padding: 15px 20px;
-    }
-
-    a {
-      color: #ffd700;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    a:hover {
-      color: #ffed4e;
-      text-decoration: underline;
-    }
-
-    /* Typing indicator */
-    .typing-indicator {
-      display: none;
-      align-items: center;
-      padding: 10px 15px;
-      margin: 10px 0;
-    }
-
-    .typing-dots {
-      display: flex;
-      align-items: center;
-    }
-
-    .typing-dots span {
-      height: 8px;
-      width: 8px;
-      background-color: #999;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 2px;
-      animation: typing 1.5s infinite ease-in-out;
-    }
-
-    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes typing {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-10px); }
-    }
-
-    /* Scrollbar styling */
-    .messages-box::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .messages-box::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-
-    .messages-box::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 10px;
-    }
-
-    .messages-box::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-      .message-text {
-        max-width: 90%;
-        padding: 12px;
-      }
-      
-      .message-form {
-        padding: 10px;
-      }
-      
-      .messages-box {
-        padding-bottom: 100px;
-      }
-    }
+  .delete-button:hover {
+    background-color: #c82333;
+  }
 </style>
 {% endblock %}
 
@@ -275,69 +317,55 @@
     <div class="card-header text-white">
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <strong>🤖 Jarvis AI Assistant</strong>
+          <strong>AI Assistant</strong>
         </div>
         <div>
           {% if user.is_authenticated %}
-            <span><b>Welcome, {{user.username}}</b></span>
-            <a href="logout" class="ml-3">Logout</a>
+          <span><b>Welcome, {{user.username}}</b></span>
+          <a href="logout" class="ml-3">Logout</a>
           {% else %}
-            <a href="/">Login</a>
-            <a href="register" class="ml-3">Register</a>
+          <a href="/">Login</a>
+          <a href="register" class="ml-3">Register</a>
           {% endif %}
         </div>
       </div>
     </div>
-    
+
     <div class="card-body messages-box" id="messages-box">
       <ul class="list-unstyled messages-list" id="messages-list">
         {% if user.is_authenticated %}
-          <li class="message received">
-            <div class="message-text">
-              <div class="bot-header">
-                <span class="bot-icon">🤖</span>
-                <div class="message-sender">Jarvis AI Assistant</div>
-              </div>
-              <div class="message-content bot-response">
-                <p>Hello <strong>{{user.username}}</strong>! 👋</p>
-                <p>I'm your AI assistant, ready to help you with any questions or tasks. Feel free to ask me about:</p>
-                <ul>
-                  <li>Programming and technology</li>
-                  <li>General knowledge and information</li>
-                  <li>Problem-solving and analysis</li>
-                  <li>Creative writing and brainstorming</li>
-                </ul>
-                <p>What can I help you with today?</p>
-              </div>
+        <li class="message received">
+          <div class="message-text">
+            <div class="message-content bot-response">
+              <p>Hello <strong>{{user.username}}</strong>! 👋</p>
+              <p>What can I help you with today?</p>
             </div>
-          </li>
+          </div>
+        </li>
         {% endif %}
-        
+
         {% for chat in chats %}
-          {% if chat.user == request.user %}
-          <li class="message sent">
-            <div class="message-text">
-              <div class="message-sender">You</div>
-              <div class="message-content">
-                {{chat.message}}
-              </div>
+        {% if chat.user == request.user %}
+        <li class="message sent">          
+          <div class="message-text">
+            <div class="message-sender">You</div>
+            <div class="message-content">
+              {{chat.message}}
             </div>
-          </li> 
-          <li class="message received">
-            <div class="message-text">
-              <div class="bot-header">
-                <span class="bot-icon">🤖</span>
-                <div class="message-sender">Jarvis AI Assistant</div>
-              </div>
-              <div class="message-content bot-response">
-                {{chat.response|format_chat_response|safe}}
-              </div>
+          </div>
+          <button class="btn btn-danger btn-sm delete-button" data-message-id="{{ chat.id }}">Delete</button>
+        </li>
+        <li class="message received">
+          <div class="message-text">
+            <div class="message-content bot-response">
+              {{chat.response|format_chat_response|safe}}
             </div>
-          </li> 
-          {% endif %}
+          </div>
+        </li>
+        {% endif %}
         {% endfor %}
       </ul>
-      
+
       <!-- Typing indicator -->
       <div class="typing-indicator" id="typing-indicator">
         <div class="message-text">
@@ -354,15 +382,12 @@
       </div>
     </div>
   </div>
-  
+
   <form class="message-form" id="message-form">
     {%csrf_token%}
     <div class="d-flex w-100 align-items-center">
-      <input type="text" 
-             class="form-control message-input" 
-             id="message-input"
-             placeholder="Ask me anything..." 
-             autocomplete="off">
+      <input type="text" class="form-control message-input" id="message-input" placeholder="Ask me anything..."
+        autocomplete="off">
       <button type="submit" class="btn btn-primary btn-send">
         <i class="fas fa-paper-plane"></i>
         <span style="font-size: 18px;">➤</span>
@@ -385,33 +410,33 @@
 
   // Function to format markdown-like text to HTML
   function formatResponse(text) {
-    // Remove the "🤖 Gemini Response:" prefix if it exists
-    text = text.replace(/^🤖 Gemini Response:\s*\n*/, '');
-    
+    // Remove the "Gemini Response:" prefix if it exists
+    text = text.replace(/^Gemini Response:\s*\n*/, '');
+
     // Convert markdown-style formatting to HTML
     return text
       // Headers
       .replace(/^### (.*$)/gim, '<h3>$1</h3>')
       .replace(/^## (.*$)/gim, '<h2>$1</h2>')
       .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      
+
       // Bold text
       .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      
+
       // Code blocks
       .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
       .replace(/`([^`]+)`/g, '<code>$1</code>')
-      
+
       // Line breaks
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br>')
-      
+
       // Wrap in paragraph if not already wrapped
       .replace(/^(?!<[hp])/gm, '<p>')
       .replace(/(?<![>])$/gm, '</p>')
-      
+
       // Clean up empty paragraphs
       .replace(/<p><\/p>/g, '')
       .replace(/<p>(<[^>]+>)<\/p>/g, '$1');
@@ -460,36 +485,33 @@
         'message': message
       })
     })
-    .then(response => response.json())
-    .then(data => {
-      hideTypingIndicator();
-      
-      const response = data.response;
-      const formattedResponse = formatResponse(response);
-      
-      const botMessageItem = document.createElement('li');
-      botMessageItem.classList.add('message', 'received');
-      botMessageItem.innerHTML = `
+      .then(response => response.json())
+      .then(data => {
+        hideTypingIndicator();
+
+        const response = data.response;
+        const formattedResponse = formatResponse(response);
+
+        const botMessageItem = document.createElement('li');
+        botMessageItem.classList.add('message', 'received');
+        botMessageItem.innerHTML = `
         <div class="message-text">
-          <div class="bot-header">
-            <span class="bot-icon">🤖</span>
-            <div class="message-sender">Jarvis AI Assistant</div>
-          </div>
+
           <div class="message-content bot-response">
             ${formattedResponse}
           </div>
         </div>
       `;
-      messagesList.appendChild(botMessageItem);
-      scrollToBottom();
-    })
-    .catch(error => {
-      hideTypingIndicator();
-      console.error('Error:', error);
-      
-      const errorMessageItem = document.createElement('li');
-      errorMessageItem.classList.add('message', 'received');
-      errorMessageItem.innerHTML = `
+        messagesList.appendChild(botMessageItem);
+        scrollToBottom();
+      })
+      .catch(error => {
+        hideTypingIndicator();
+        console.error('Error:', error);
+
+        const errorMessageItem = document.createElement('li');
+        errorMessageItem.classList.add('message', 'received');
+        errorMessageItem.innerHTML = `
         <div class="message-text">
           <div class="bot-header">
             <span class="bot-icon">❌</span>
@@ -500,9 +522,9 @@
           </div>
         </div>
       `;
-      messagesList.appendChild(errorMessageItem);
-      scrollToBottom();
-    });
+        messagesList.appendChild(errorMessageItem);
+        scrollToBottom();
+      });
   });
 
   // Auto-focus on input when page loads
@@ -512,11 +534,34 @@
   scrollToBottom();
 
   // Format existing bot responses on page load (backup for any missed formatting)
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Most responses should already be formatted by the template filter
     // This is just a backup for any edge cases
-    
+
     scrollToBottom();
+  });
+
+  // Delete button functionality
+  document.querySelectorAll('.delete-button').forEach(button => {
+    button.addEventListener('click', (event) => {
+      const messageId = event.target.getAttribute('data-message-id');
+      // Send delete request to server
+      fetch(`/delete_chat/${messageId}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      })
+        .then(response => {
+          if (response.ok) {
+            // Remove message from UI
+            const messageItem = document.querySelector(`.message[data-message-id="${messageId}"]`);
+            messageItem.remove();
+          } else {
+            console.error('Error deleting message:', response.statusText);
+          }
+        });
+    });
   });
 </script>
 {% endblock %}

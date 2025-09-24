@@ -43,13 +43,18 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-### 5. Run the development server
+### 5. Run fix_chat_responses (if applicable)
 
 ```bash
-python manage.py runserver
+python manage.py fix_chat_responses
+```
+### 6. Run the development server
+
+```bash
+python manage.py runserver 0.0.0.0:8004
 ```
 
-Visit [http://localhost:8000](http://localhost:8000) to access the chatbot.
+Visit [http://localhost:8004](http://localhost:8004) to access the chatbot.
 
 ## Docker
 
@@ -64,10 +69,10 @@ Visit [http://localhost:8000](http://localhost:8000) to access the chatbot.
 2. **Run the container:**
 
     ```bash
-    docker run -d -p 8000:8000 django_chatbot
+    docker run -d -p 8004:8004 django_chatbot
     ```
 
-3. The chatbot will be available at [http://localhost:8000](http://localhost:8000).
+3. The chatbot will be available at [http://localhost:8004](http://localhost:8004).
 
 ### Example `Dockerfile`
 
@@ -82,9 +87,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8004
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8004"]
 ```
 
 ## Project Structure

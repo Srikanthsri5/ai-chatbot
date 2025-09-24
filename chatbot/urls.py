@@ -1,10 +1,11 @@
 from django.urls import path
-from . import views
+from .views import main, auth
 
 urlpatterns =[
-    path('',views.home, name='home'),
-    path('home',views.chatbot, name='chatbot'),
-    path('login',views.login, name='login'),
-    path('register',views.register, name='register'),
-    path('logout',views.logout, name='logout')
+    path('',main.home, name='home'),
+    path('home',main.chatbot, name='chatbot'),
+    path('delete_chat/<int:chat_id>/', main.delete_chat, name='delete_chat'),
+    path('login',auth.login, name='login'),
+    path('register',auth.register, name='register'),
+    path('logout',auth.logout, name='logout')
 ]
